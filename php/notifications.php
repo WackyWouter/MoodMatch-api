@@ -12,9 +12,9 @@ class Notifications{
 
         // Add notification
         $query = 'INSERT INTO notifications (
-                            matcher_uuid
+                            matcher_uuid,
                             match_id,
-                            mood
+                            mood,
                             adddate)
                         VALUES (?,?,?, NOW())';
         

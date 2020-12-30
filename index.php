@@ -46,13 +46,14 @@ if (isset($data['action'])) {
         case 'resetPartner':
             echo Matches::resetPartner();
             break;
+        case 'currentStatus':
+            echo Matches::currentStatus();
+            break;
         case 'addNotification':
             echo Notifications::addNotification();
             break;
         case 'history':
             echo Notifications::getHistory();
-            break;
-        case 'currentStatus':
             break;
         default:
             exit('404 call not found');

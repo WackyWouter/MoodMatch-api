@@ -61,6 +61,42 @@ class Matches{
         return json_encode(['status'=> 'ok']);
     }
 
+    public static function currentStatus(){
+        Request::checkRequest(['matcher_uuid', 'match_id']);
+
+
+        $matches_id = null;
+        $partner1 = null;
+        $partner1_mood = null;
+        $partner2 = null;
+        $partner2_mood = null;
+
+        // Get the mood of both partners in the match
+        $query = 'SELECT m.id
+                    , m.partner_1
+                    , (SELECT u.mood FROM users u WHERE u.matcher_uuid = m.partner_1)
+                    , m.partner_2
+                    , (SELECT u.mood FROM users u WHERE u.matcher_uuid = m.partner_2)
+                FROM 
+                    matches m
+                WHERE 
+                    (m.partner_1 = ? OR m.partner_2 = ?)
+                    AND m.id = ?';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('ssi', Request::$data['matcher_uuid'], Request::$data['matcher_uuid'], Request::$data['match_id']);
+        $stmt->execute();
+        $stmt->bind_result($matches_id, $partner1, $partner1_mood, $partner2, $partner2_mood);
+        $stmt->fetch();
+        up_database::serverError($stmt);
+        $stmt->close();
+
+        if($partner1 == Request::$data['matcher_uuid']){
+            return json_encode(['status' => 'ok', 'you' => $partner1_mood, 'partner' => $partner2_mood]);
+        }else {
+            return json_encode(['status' => 'ok', 'you' => $partner2_mood, 'partner' => $partner1_mood]);
+        }
+    }
+
     // check if new partner is already matched with someone
     private static function checkpartnerAlready($partner_uuid){
         $partner = null;

@@ -27,7 +27,7 @@ class User{
     public static function updateDeviceId(){
         Request::checkRequest(['device_id', 'matcher_uuid']);
 
-        if(self::doesUserExist(Request::$data['matcher_uuid'])){
+        if(self::doesUserNotExist(Request::$data['matcher_uuid'])){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 
@@ -41,7 +41,7 @@ class User{
         return json_encode(['status'=> 'ok']);
     }
     
-    public static function doesUserExist($matcher_uuid){
+    public static function doesUserNotExist($matcher_uuid){
 
         $user = null;
         $query = 'SELECT user_uuid FROM users WHERE matcher_uuid = ?';
@@ -53,6 +53,6 @@ class User{
         up_database::serverError($stmt);
         $stmt->close();
 
-        return $user != null;
+        return $user == null;
     }
 }

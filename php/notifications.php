@@ -10,7 +10,7 @@ class Notifications{
             exit;
         }
         
-        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
         
@@ -39,7 +39,7 @@ class Notifications{
             exit;
         }
 
-        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 

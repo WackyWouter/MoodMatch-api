@@ -5,7 +5,7 @@ class Matches{
     public static function createMatch(){
         Request::checkRequest(['matcher_uuid', 'partner_uuid']);
 
-        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'] || User::doesUserNotExist(Request::$data['partner_uuid']))){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 
@@ -35,7 +35,7 @@ class Matches{
     public static function changePartner(){
         Request::checkRequest(['matcher_uuid', 'partner_uuid']);
 
-        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'] || User::doesUserNotExist(Request::$data['partner_uuid']))){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 
@@ -65,7 +65,7 @@ class Matches{
     public static function resetPartner(){
         Request::checkRequest(['matcher_uuid']);
 
-        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
         
@@ -77,7 +77,7 @@ class Matches{
     public static function currentStatus(){
         Request::checkRequest(['matcher_uuid', 'match_id']);
 
-        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'] || User::doesUserNotExist(Request::$data['partner_uuid']))){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 

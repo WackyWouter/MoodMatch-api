@@ -107,6 +107,13 @@ class Matches{
         up_database::serverError($stmt);
         $stmt->close();
 
+        if($matches_id == null){
+            return json_encode(['status' => 'nok', 'error' => 'No matching results found']);
+        }
+        if($partner1_mood === null || $partner2_mood === null){
+            return json_encode(['status' => 'nok', 'error' => 'Something is wrong with your match. Please contact the creator or re-match with your partner.']);
+        }
+
         if($partner1 == Request::$data['matcher_uuid']){
             return json_encode(['status' => 'ok', 'you' => $partner1_mood, 'partner' => $partner2_mood]);
         }else {

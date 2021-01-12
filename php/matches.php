@@ -5,11 +5,15 @@ class Matches{
     public static function createMatch(){
         Request::checkRequest(['matcher_uuid', 'partner_uuid']);
 
+        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
+
         if(self::checkpartnerAlready(Request::$data['partner_uuid'])){
-            return json_encode(['status' => 'nok', 'message' => 'The partner you\'re trying to match with is already matched with someone else.']);
+            return json_encode(['status' => 'nok', 'error' => 'The partner you\'re trying to match with is already matched with someone else.']);
         }
         if(self::checkpartnerAlready(Request::$data['matcher_uuid'])){
-            return json_encode(['status' => 'nok', 'message' => 'You already have a partner. Please use the changePartner action to change partners.']);
+            return json_encode(['status' => 'nok', 'error' => 'You already have a partner. Please use the changePartner action to change partners.']);
         }
 
         // Create new match
@@ -31,8 +35,12 @@ class Matches{
     public static function changePartner(){
         Request::checkRequest(['matcher_uuid', 'partner_uuid']);
 
+        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
+
         if(self::checkpartnerAlready(Request::$data['partner_uuid'])){
-            return json_encode(['status' => 'nok', 'message' => 'The partner you\'re trying to match with is already matched with someone else.']);
+            return json_encode(['status' => 'nok', 'error' => 'The partner you\'re trying to match with is already matched with someone else.']);
         }
 
        self::deletePartner();
@@ -56,6 +64,11 @@ class Matches{
     // TODO make function to delete partner
     public static function resetPartner(){
         Request::checkRequest(['matcher_uuid']);
+
+        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
+        
         self::deletePartner();
 
         return json_encode(['status'=> 'ok']);
@@ -63,6 +76,10 @@ class Matches{
 
     public static function currentStatus(){
         Request::checkRequest(['matcher_uuid', 'match_id']);
+
+        if(User::doesUserExist(Request::$data['matcher_uuid'] || User::doesUserExist(Request::$data['partner_uuid']))){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
 
 
         $matches_id = null;

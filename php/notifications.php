@@ -9,7 +9,11 @@ class Notifications{
             header("Incorrect values", true, 400);
             exit;
         }
-
+        
+        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
+        
         // Add notification
         $query = 'INSERT INTO notifications (
                             matcher_uuid,
@@ -33,6 +37,10 @@ class Notifications{
         if(!is_numeric(Request::$data['match_id'])){
             header("Incorrect values", true, 400);
             exit;
+        }
+
+        if(User::doesUserExist(Request::$data['matcher_uuid'])){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
 
         $notifications = array();

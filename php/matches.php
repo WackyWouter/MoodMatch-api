@@ -170,4 +170,22 @@ class Matches{
         $stmt->close();
     }
 
+    public static function checkMatchIdAndUuid(){
+        $id = 0;
+        $query = 'SELECT id FROM matches WHERE (partner_1 = ? OR partner_2 = ?) AND id = ? LIMIT 0,1';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('ssi', Request::$data['matcher_uuid'], Request::$data['matcher_uuid'], Request::$data['match_id']);
+        $stmt->execute();
+        $stmt->bind_result($id);
+        $stmt->fetch();
+        up_database::serverError($stmt);
+        $stmt->close();
+
+        if($id > 0 ){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }

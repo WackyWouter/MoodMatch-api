@@ -13,6 +13,10 @@ class Notifications{
         if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
             return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
         }
+
+        if(!Matches::checkMatchIdAndUuid()){
+            return json_encode(['status'=> 'nok', 'error' => 'No match found for id and uuid']);
+        }
         
         // Add notification
         $query = 'INSERT INTO notifications (

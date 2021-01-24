@@ -63,8 +63,8 @@ class Notifications{
                     LEFT JOIN
                         notifications n ON n.match_id = m.id
                     WHERE 
-                        n.matcher_uuid = m.partner_1 
-                        OR n.matcher_uuid = m.partner_2
+                        (n.matcher_uuid = m.partner_1 
+                        OR n.matcher_uuid = m.partner_2)
                         AND (m.partner_1 = ? OR m.partner_2 = ?)
                         AND m.id = ?
                     ORDER BY

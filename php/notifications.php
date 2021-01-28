@@ -67,6 +67,7 @@ class Notifications{
                         OR n.matcher_uuid = m.partner_2)
                         AND (m.partner_1 = ? OR m.partner_2 = ?)
                         AND m.id = ?
+                        AND n.mood != 2
                     ORDER BY
                         adddate';
         $stmt = up_database::prepare($query);

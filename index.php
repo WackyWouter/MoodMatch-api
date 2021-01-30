@@ -52,6 +52,9 @@ if (isset($data['action'])) {
         case 'partnerDevice':
             echo Matches::getPartnerDeviceId();
             break;
+        case 'checkMatch':
+            echo Matches::checkMatched();
+            break;
         case 'addNotification':
             echo Notifications::addNotification();
             break;

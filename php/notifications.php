@@ -17,7 +17,15 @@ class Notifications{
         if(!Matches::checkMatchIdAndUuid()){
             return json_encode(['status'=> 'nok', 'error' => 'No match found for id and uuid']);
         }
-        
+
+        // Change status of the user sending the notification
+        $query = 'UPDATE users SET mood = ? WHERE matcher_uuid = ?';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('is', Request::$data['mood'], Request::$data['matcher_uuid']);
+        $stmt->execute();
+        up_database::serverError($stmt);
+        $stmt->close();
+
         // Add notification
         $query = 'INSERT INTO notifications (
                             matcher_uuid,

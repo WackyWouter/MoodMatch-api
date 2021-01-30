@@ -179,6 +179,34 @@ class Matches{
         }
     }
 
+    public static function checkMatched(){
+        Request::checkRequest(['matcher_uuid']);
+
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }
+
+
+        $id = 0;
+        $partner1 = null;
+        $partner2 = null;
+        $query = 'SELECT id, partner_1, partner_2 FROM matches WHERE (partner_1 = ? OR partner_2 = ?) LIMIT 0,1';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('ss', Request::$data['matcher_uuid'], Request::$data['matcher_uuid']);
+        $stmt->execute();
+        $stmt->bind_result($id, $partner1, $partner2);
+        $stmt->fetch();
+        up_database::serverError($stmt);
+        $stmt->close();
+
+        if($id > 0 ){
+            return json_encode(['status' => 'ok', 'matched' => true, 'match_id' => $id]);
+        }else{
+            return json_encode(['status' => 'ok', 'matched' => false]);
+        }
+
+    }
+
     // check if new partner is already matched with someone
     private static function checkpartnerAlready($partner_uuid){
         $partner = null;

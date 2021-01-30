@@ -121,6 +121,64 @@ class Matches{
         }
     }
 
+    public static function getPartnerDeviceId(){
+        Request::checkRequest(['matcher_uuid', 'match_id']);
+
+        if(!is_numeric(Request::$data['match_id'])){
+            header("Incorrect values", true, 400);
+            exit;
+        }
+        
+        if(User::doesUserNotExist(Request::$data['matcher_uuid'])){
+            return json_encode(['status'=> 'nok', 'error' => 'No matching user found']);
+        }         
+
+        $id = 0;
+        $partner1 = null;
+        $partner2 = null;
+        $query = 'SELECT id, partner_1, partner_2 FROM matches WHERE (partner_1 = ? OR partner_2 = ?) AND id = ? LIMIT 0,1';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('ssi', Request::$data['matcher_uuid'], Request::$data['matcher_uuid'], Request::$data['match_id']);
+        $stmt->execute();
+        $stmt->bind_result($id, $partner1, $partner2);
+        $stmt->fetch();
+        up_database::serverError($stmt);
+        $stmt->close();
+
+        if(!($id > 0)){
+            return json_encode(['status'=> 'nok', 'error' => 'No match found for id and uuid']);
+        }
+        
+        $partner_matcher_uuid = '';
+        // Check which one is the user and which one is the partner matcher_uuid
+        switch (Request::$data['matcher_uuid']){
+            case $partner1:
+                $partner_matcher_uuid = $partner2;
+                break;
+            case $partner2:
+                $partner_matcher_uuid = $partner1;
+                break;
+            default:
+                return json_encode(['status'=> 'nok', 'error' => 'No match found for id and uuid']);
+        }
+
+        $device_id = '';
+        $query = 'SELECT device_id FROM users WHERE matcher_uuid = ? LIMIT 0,1';
+        $stmt = up_database::prepare($query);
+        $stmt->bind_param('s', $partner_matcher_uuid);
+        $stmt->execute();
+        $stmt->bind_result($device_id);
+        $stmt->fetch();
+        up_database::serverError($stmt);
+        $stmt->close();
+
+        if(strlen($device_id) > 0){
+            return json_encode(['status' => 'ok', 'device_id' => $device_id]);
+        }else{
+            return json_encode(['status'=> 'nok', 'error' => 'No device_id found for given user']);
+        }
+    }
+
     // check if new partner is already matched with someone
     private static function checkpartnerAlready($partner_uuid){
         $partner = null;
@@ -187,5 +245,7 @@ class Matches{
             return false;
         }
     }
+
+   
 
 }

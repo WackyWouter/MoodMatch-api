@@ -49,6 +49,9 @@ if (isset($data['action'])) {
         case 'currentStatus':
             echo Matches::currentStatus();
             break;
+        case 'partnerDevice':
+            echo Matches::getPartnerDeviceId();
+            break;
         case 'addNotification':
             echo Notifications::addNotification();
             break;
